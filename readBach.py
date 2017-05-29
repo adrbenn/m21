@@ -26,22 +26,27 @@ def readAllBach():
 
 		#Normalize to C - note we're not minoring majoring yet
 		k = midData.analyze('key')
-		i = music21.interval.Interval(k.tonic, music21.pitch.Pitch('C'))
+		if(k.mode == 'minor'):
+			i = music21.interval.Interval(k.tonic, music21.pitch.Pitch('A'))
+		else:
+			i = music21.interval.Interval(k.tonic, music21.pitch.Pitch('C'))
 		midData = midData.transpose(i)
 
 
 		midData = midData.chordify()
 		midData = midData.getElementsByClass(music21.chord.Chord)
 
-		allChords = [''.join([chr(p.midi) for p in x.pitches]) for x in midData]
+		# allChords = [''.join([chr(p.midi) for p in x.pitches]) for x in midData]
 
 		# simplifiedBass = [chr(x.bass().midi) for x in midData]
-		# simplifiedChords = [x.orderedPitchClassesString for x in midData]
+		simplifiedChords = [x.orderedPitchClassesString[1:-1] for x in midData]
+		simplifiedBass = [x.bass().name for x in midData]
+
 		# simplifiedChords = [sorted(set(x.pitchClasses)) for x in midData]
 		# simplifiedChords = [','.join([str(y) for y in x]) for x in simplifiedChords]
 
-		# bassAndChords = [j for i in zip(simplifiedBass, simplifiedChords) for j in i]
-		bassAndChords = allChords
+		bassAndChords = [j for i in zip(simplifiedBass, simplifiedChords) for j in i]
+		# bassAndChords = allChords
 
 		finalString = ' '.join(bassAndChords)
 		# print(finalString)
@@ -51,6 +56,8 @@ def readAllBach():
 		if (k.mode == 'major'):
 			annotatedMajorChords.append(finalString)
 
+	annotatedMinorChords = [x+'\n' for x in annotatedMinorChords]
+	annotatedMajorChords = [x + '\n' for x in annotatedMajorChords]
 	# with open(resultfile,'w') as output:
 	# 	output.writelines(annotatedBassChords)
 	with open(majorFile, 'w') as output:
