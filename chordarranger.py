@@ -68,6 +68,11 @@ def moveFrom(prevchord, pitchclassset, prevbass, laterbass):
 						newpitches.append((newPitch, moves[index]))
 						newpitchClasses.append(newPitch.pitchClass)
 						isNotFound = False
+	omitted = [x for x in pitchclassset if x not in newpitchClasses]
+	if omitted:
+		for x in omitted:
+			newPitch = music21.pitch.Pitch(x)
+			newpitches.append((newpitches, "random"))
 	newchord = music21.chord.Chord([a for (a,b) in newpitches])
 	return newchord
 
